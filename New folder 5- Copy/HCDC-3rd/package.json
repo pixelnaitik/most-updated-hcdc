@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "build:css": "clean-css-cli -o css/styles.min.css src/css/styles.css",
+    "build:js": "node scripts/build.js",
+    "build": "npm run build:css && npm run build:js",
+    "dev": "npx serve"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "terser": "^5.37.0"
+  }
+}

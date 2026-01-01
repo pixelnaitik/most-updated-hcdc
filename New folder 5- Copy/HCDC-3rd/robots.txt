@@ -1,0 +1,13 @@
+# Robots.txt for Health Care Diagnostic Center
+# https://healthcarediagnosticscenter.in/
+
+User-agent: *
+Allow: /
+
+# Disallow crawling of non-essential paths
+Disallow: /.git/
+Disallow: /.github/
+Disallow: /node_modules/
+
+# Sitemap location
+Sitemap: https://healthcarediagnosticscenter.in/sitemap.xml
