@@ -1,9 +1,13 @@
 {
   "scripts": {
-    "build:css": "clean-css-cli -o css/styles.min.css src/css/styles.css",
+    "build:css": "npx clean-css-cli -o css/styles.min.css src/css/styles.css",
     "build:js": "node scripts/build.js",
     "build": "npm run build:css && npm run build:js",
-    "dev": "npx serve"
+    "dev": "python -m http.server 8000",
+    "lint": "node scripts/lint-js.js",
+    "check:links": "node scripts/check-links.js",
+    "qa:lighthouse": "node scripts/lighthouse-smoke.js",
+    "qa": "npm run lint && npm run check:links && npm run qa:lighthouse"
   },
   "devDependencies": {
     "clean-css-cli": "^5.6.3",

@@ -1,7 +1,6 @@
 // ===== Health Care Diagnostic Center - JavaScript =====
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize all components
   initNavbar();
   initMobileMenu();
   initScrollAnimations();
@@ -10,28 +9,21 @@ document.addEventListener('DOMContentLoaded', () => {
   initTestOptions();
   initLabOptions();
   initContactForm();
+  initWhatsAppInquiryForm();
+  initHomepageInteractions();
   initPartnerCarousel();
 });
 
-// ===== Partner Carousel Touch Support =====
 function initPartnerCarousel() {
   const wrapper = document.querySelector('.partner-carousel-wrapper');
   const carousel = document.querySelector('.partner-carousel');
-
   if (!wrapper || !carousel) return;
 
-  // Disable CSS animation
   carousel.style.animation = 'none';
-
-  // Constants based on CSS layout
-  // Card width (320px) + Gap (30px) = 350px per item
-  const ITEM_WIDTH = 350;
-  // 5 duplicate items at the end for seamless looping = 1750px
   const RESET_THRESHOLD = 1750;
-  const AUTO_SPEED = 0.8; // Pixels per frame (~50px/sec at 60fps)
-  const PAUSE_DURATION = 3000; // ms
+  const AUTO_SPEED = 0.8;
+  const PAUSE_DURATION = 3000;
 
-  // State
   let currentX = 0;
   let isDragging = false;
   let isPaused = false;
@@ -39,7 +31,6 @@ function initPartnerCarousel() {
   let dragStartX = 0;
   let restartTimeout = null;
 
-  // Main Animation Loop
   function animate() {
     if (!isDragging && !isPaused) {
       currentX -= AUTO_SPEED;
@@ -49,16 +40,9 @@ function initPartnerCarousel() {
     requestAnimationFrame(animate);
   }
 
-  // Helper to handle wrapping for infinite scroll
   function checkBounds() {
-    // If we've scrolled past the reset point (moving left)
-    if (currentX <= -RESET_THRESHOLD) {
-      currentX += RESET_THRESHOLD;
-    }
-    // If we've dragged past the start (moving right)
-    else if (currentX > 0) {
-      currentX -= RESET_THRESHOLD;
-    }
+    if (currentX <= -RESET_THRESHOLD) currentX += RESET_THRESHOLD;
+    else if (currentX > 0) currentX -= RESET_THRESHOLD;
   }
 
   function updateTransform() {
@@ -67,28 +51,20 @@ function initPartnerCarousel() {
 
   function startDrag(clientX) {
     isDragging = true;
-    isPaused = true; // Ensure auto-scroll stops
+    isPaused = true;
     startX = clientX;
     dragStartX = currentX;
-
-    // Clear any pending restart timer
     if (restartTimeout) {
       clearTimeout(restartTimeout);
       restartTimeout = null;
     }
-
-    // Change cursor
     wrapper.style.cursor = 'grabbing';
-    // Remove transition if any (not used in this logic, but good practice)
     carousel.style.transition = 'none';
   }
 
   function moveDrag(clientX) {
     if (!isDragging) return;
-
-    const delta = clientX - startX;
-    currentX = dragStartX + delta;
-
+    currentX = dragStartX + (clientX - startX);
     checkBounds();
     updateTransform();
   }
@@ -97,100 +73,88 @@ function initPartnerCarousel() {
     if (!isDragging) return;
     isDragging = false;
     wrapper.style.cursor = 'grab';
-
-    // Restart auto-scroll after delay
     restartTimeout = setTimeout(() => {
       isPaused = false;
     }, PAUSE_DURATION);
   }
 
-  // Touch Events
   wrapper.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX), { passive: true });
   wrapper.addEventListener('touchmove', (e) => moveDrag(e.touches[0].clientX), { passive: true });
   wrapper.addEventListener('touchend', endDrag);
-
-  // Mouse Events
   wrapper.addEventListener('mousedown', (e) => {
-    e.preventDefault(); // Prevent text selection
+    e.preventDefault();
     startDrag(e.clientX);
   });
   window.addEventListener('mousemove', (e) => moveDrag(e.clientX));
   window.addEventListener('mouseup', endDrag);
 
-  // Pause on hover (Desktop)
   wrapper.addEventListener('mouseenter', () => {
-    if (!isDragging) {
-      isPaused = true;
-      if (restartTimeout) clearTimeout(restartTimeout);
-    }
+    if (isDragging) return;
+    isPaused = true;
+    if (restartTimeout) clearTimeout(restartTimeout);
   });
 
   wrapper.addEventListener('mouseleave', () => {
-    if (!isDragging) {
-      restartTimeout = setTimeout(() => {
-        isPaused = false;
-      }, PAUSE_DURATION);
-    }
+    if (isDragging) return;
+    restartTimeout = setTimeout(() => {
+      isPaused = false;
+    }, PAUSE_DURATION);
   });
 
-  // Start the loop
   requestAnimationFrame(animate);
 }
 
-
-// ===== Navbar Scroll Effect =====
 function initNavbar() {
   const navbar = document.getElementById('navbar');
+  if (!navbar) return;
 
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
   });
 }
 
-// ===== Mobile Menu Toggle =====
 function initMobileMenu() {
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const navMenu = document.getElementById('navMenu');
+  if (!mobileMenuBtn || !navMenu) return;
 
-  if (mobileMenuBtn && navMenu) {
-    mobileMenuBtn.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-      mobileMenuBtn.classList.toggle('active');
-    });
+  mobileMenuBtn.setAttribute('aria-controls', 'navMenu');
+  mobileMenuBtn.setAttribute('aria-expanded', 'false');
 
-    // Close menu when clicking a link
-    navMenu.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        mobileMenuBtn.classList.remove('active');
-      });
-    });
+  function closeMenu() {
+    navMenu.classList.remove('active');
+    mobileMenuBtn.classList.remove('active');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
+
+  mobileMenuBtn.addEventListener('click', () => {
+    const willOpen = !navMenu.classList.contains('active');
+    navMenu.classList.toggle('active');
+    mobileMenuBtn.classList.toggle('active');
+    mobileMenuBtn.setAttribute('aria-expanded', String(willOpen));
+  });
+
+  navMenu.querySelectorAll('.nav-link').forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
 }
 
-// ===== Scroll Animations =====
 function initScrollAnimations() {
   const fadeElements = document.querySelectorAll('.fade-in');
+  if (fadeElements.length === 0 || !('IntersectionObserver' in window)) return;
 
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
     });
   }, {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
   });
 
-  fadeElements.forEach(el => observer.observe(el));
+  fadeElements.forEach((el) => observer.observe(el));
 }
 
-// ===== Book Test Modal =====
 function initBookTestModal() {
   const modal = document.getElementById('bookTestModal');
   const bookTestBtn = document.getElementById('bookTestBtn');
@@ -201,175 +165,172 @@ function initBookTestModal() {
   const confirmWhatsApp = document.getElementById('confirmWhatsApp');
   const confirmCall = document.getElementById('confirmCall');
 
+  if (!modal || !prevBtn || !nextBtn || !confirmWhatsApp || !confirmCall) return;
+
   let currentStep = 1;
   const totalSteps = 2;
 
-  // Open modal
   const triggerButtons = document.querySelectorAll('.trigger-booking-modal');
-  [bookTestBtn, heroBookTest, ...triggerButtons].forEach(btn => {
-    if (btn) {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      });
-    }
+  [bookTestBtn, heroBookTest, ...triggerButtons].forEach((btn) => {
+    if (!btn) return;
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      updateSteps();
+    });
   });
 
-  // Close modal
   if (modalClose) {
-    modalClose.addEventListener('click', () => {
-      closeModal();
-    });
+    modalClose.addEventListener('click', closeModal);
   }
 
-  // Close on overlay click
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      closeModal();
-    }
+    if (e.target === modal) closeModal();
   });
 
-  // Close on escape key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
-      closeModal();
-    }
+    if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
   });
 
   function closeModal() {
     modal.classList.remove('active');
     document.body.style.overflow = '';
-    // Reset to step 1
     currentStep = 1;
     updateSteps();
   }
 
-  // Navigation buttons
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      if (currentStep > 1) {
-        currentStep--;
-        updateSteps();
-      }
-    });
-  }
+  prevBtn.addEventListener('click', () => {
+    if (currentStep > 1) {
+      currentStep -= 1;
+      updateSteps();
+    }
+  });
 
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      if (currentStep < totalSteps) {
-        currentStep++;
-        updateSteps();
-        if (currentStep === 2) {
-          updateBookingSummary();
-        }
-      }
-    });
-  }
+  nextBtn.addEventListener('click', () => {
+    if (currentStep === 1) {
+      currentStep = 2;
+      updateSteps();
+      updateBookingSummary();
+      return;
+    }
+
+    if (validateBookingDetails()) {
+      currentStep = totalSteps;
+      updateSteps();
+    }
+  });
 
   function updateSteps() {
-    // Update step indicators
     document.querySelectorAll('.step-dot').forEach((dot, index) => {
       dot.classList.toggle('active', index < currentStep);
     });
 
-    // Update step content
     document.querySelectorAll('.step-content').forEach((content, index) => {
-      content.classList.toggle('active', index + 1 === currentStep);
+      content.classList.toggle('active', index + 1 === Math.min(currentStep, 2));
     });
 
-    // Update buttons visibility
     prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
     nextBtn.style.display = currentStep < totalSteps ? 'block' : 'none';
     confirmWhatsApp.style.display = currentStep === totalSteps ? 'flex' : 'none';
     confirmCall.style.display = currentStep === totalSteps ? 'flex' : 'none';
   }
 
-  // WhatsApp confirmation
-  if (confirmWhatsApp) {
-    confirmWhatsApp.addEventListener('click', (e) => {
-      e.preventDefault();
-      const message = generateWhatsAppMessage();
-      const phone = '9162216654'; // Updated contact number
-      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
-    });
-  }
+  confirmWhatsApp.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!validateBookingDetails()) {
+      currentStep = 2;
+      updateSteps();
+      return;
+    }
+
+    const message = generateWhatsAppMessage();
+    window.open(`https://wa.me/9162216654?text=${encodeURIComponent(message)}`, '_blank');
+  });
+
+  updateSteps();
 }
 
-// ===== Test Options Selection =====
-// ===== Test Options Selection =====
+function validateBookingDetails() {
+  const nameInput = document.getElementById('patientName');
+  const phoneInput = document.getElementById('patientPhone');
+  if (!nameInput || !phoneInput) return true;
+
+  const hasName = nameInput.value.trim().length >= 2;
+  const hasPhone = /^[0-9]{10}$/.test(phoneInput.value.replace(/\D/g, ''));
+
+  nameInput.classList.toggle('invalid', !hasName);
+  phoneInput.classList.toggle('invalid', !hasPhone);
+
+  if (!hasName) nameInput.setAttribute('aria-invalid', 'true');
+  else nameInput.removeAttribute('aria-invalid');
+
+  if (!hasPhone) phoneInput.setAttribute('aria-invalid', 'true');
+  else phoneInput.removeAttribute('aria-invalid');
+
+  return hasName && hasPhone;
+}
+
 function initTestOptions() {
-  // Use change event on inputs to handle state correctly
-  // This avoids double-toggling issues when clicking labels
-  document.querySelectorAll('.test-option input[type="checkbox"]').forEach(checkbox => {
+  document.querySelectorAll('.test-option input[type="checkbox"]').forEach((checkbox) => {
     checkbox.addEventListener('change', () => {
       const option = checkbox.closest('.test-option');
-      if (checkbox.checked) {
-        option.classList.add('selected');
-      } else {
-        option.classList.remove('selected');
-      }
+      if (option) option.classList.toggle('selected', checkbox.checked);
     });
   });
 }
 
-// ===== Lab Options Selection =====
 function initLabOptions() {
-  document.querySelectorAll('.lab-option').forEach(option => {
+  document.querySelectorAll('.lab-option').forEach((option) => {
     option.addEventListener('click', () => {
-      // Remove selection from all
-      document.querySelectorAll('.lab-option').forEach(opt => {
+      document.querySelectorAll('.lab-option').forEach((opt) => {
         opt.classList.remove('selected');
-        opt.querySelector('input[type="radio"]').checked = false;
+        const input = opt.querySelector('input[type="radio"]');
+        if (input) input.checked = false;
       });
-      // Select clicked option
+
       option.classList.add('selected');
-      option.querySelector('input[type="radio"]').checked = true;
+      const selectedInput = option.querySelector('input[type="radio"]');
+      if (selectedInput) selectedInput.checked = true;
     });
   });
 }
 
-// ===== Update Booking Summary =====
 function updateBookingSummary() {
   const summary = document.getElementById('bookingSummary');
   if (!summary) return;
 
   const selectedTests = [];
-  document.querySelectorAll('.test-option.selected').forEach(option => {
-    const testName = option.querySelector('span:first-of-type').textContent;
-    selectedTests.push(testName);
+  document.querySelectorAll('.test-option.selected').forEach((option) => {
+    const testName = option.querySelector('span:first-of-type')?.textContent;
+    if (testName) selectedTests.push(testName);
   });
 
-  // Get custom tests
-  const customTestsInput = document.getElementById('customTests');
-  const customTests = customTestsInput?.value?.trim() || '';
-  if (customTests) {
-    selectedTests.push(customTests);
-  }
+  const customTests = document.getElementById('customTests')?.value?.trim();
+  if (customTests) selectedTests.push(customTests);
+
+  const preferredSlot = document.getElementById('preferredSlot')?.value || 'Not specified';
 
   summary.innerHTML = `
-    <h4 style="margin-bottom: 12px; color: var(--slate-800);">Booking Summary</h4>
-    <p style="margin-bottom: 8px;"><strong>Tests:</strong> ${selectedTests.length > 0 ? selectedTests.join(', ') : 'None selected'}</p>
+    <h4 class="booking-summary-title">Booking Summary</h4>
+    <p><strong>Tests:</strong> ${selectedTests.length > 0 ? selectedTests.join(', ') : 'None selected'}</p>
+    <p><strong>Preferred Slot:</strong> ${preferredSlot}</p>
   `;
 }
 
-// ===== Generate WhatsApp Message =====
 function generateWhatsAppMessage() {
   const name = document.getElementById('patientName')?.value || 'Not provided';
   const phone = document.getElementById('patientPhone')?.value || 'Not provided';
+  const preferredSlot = document.getElementById('preferredSlot')?.value || 'Not specified';
 
   const selectedTests = [];
-  document.querySelectorAll('.test-option.selected').forEach(option => {
-    const testName = option.querySelector('span:first-of-type').textContent;
-    selectedTests.push(testName);
+  document.querySelectorAll('.test-option.selected').forEach((option) => {
+    const testName = option.querySelector('span:first-of-type')?.textContent;
+    if (testName) selectedTests.push(testName);
   });
 
-  // Get custom tests
-  const customTestsInput = document.getElementById('customTests');
-  const customTests = customTestsInput?.value?.trim() || '';
-  if (customTests) {
-    selectedTests.push(customTests);
-  }
+  const customTests = document.getElementById('customTests')?.value?.trim();
+  if (customTests) selectedTests.push(customTests);
 
   const queries = document.getElementById('patientQueries')?.value?.trim() || '';
 
@@ -378,90 +339,160 @@ function generateWhatsAppMessage() {
 *Patient Name:* ${name}
 *Phone:* ${phone}
 *Tests:* ${selectedTests.join(', ') || 'None selected'}
+*Preferred Slot:* ${preferredSlot}
 ${queries ? `*Queries:* ${queries}` : ''}
 
 Please confirm my booking. Thank you!`;
 }
 
-// ===== Scroll to Top Button =====
 function initScrollToTop() {
   const scrollTopBtn = document.getElementById('scrollTop');
+  if (!scrollTopBtn) return;
 
-  if (scrollTopBtn) {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 500) {
-        scrollTopBtn.classList.add('visible');
-      } else {
-        scrollTopBtn.classList.remove('visible');
-      }
-    });
+  window.addEventListener('scroll', () => {
+    scrollTopBtn.classList.toggle('visible', window.scrollY > 500);
+  });
 
-    scrollTopBtn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
+  scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 }
 
-// ===== Contact Form Validation =====
 function initContactForm() {
   const form = document.getElementById('contactForm');
+  if (!form || form.tagName === 'DIV') return;
 
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name');
+    const email = document.getElementById('email');
+    const phone = document.getElementById('phone');
+    const message = document.getElementById('message');
 
-      // Basic validation
-      const name = document.getElementById('name');
-      const email = document.getElementById('email');
-      const phone = document.getElementById('phone');
-      const message = document.getElementById('message');
+    if (!name || !email || !phone || !message) return;
 
-      let isValid = true;
+    let isValid = true;
 
-      if (!name.value.trim()) {
-        showError(name, 'Name is required');
-        isValid = false;
-      } else {
-        clearError(name);
-      }
+    if (!name.value.trim()) {
+      showError(name, 'Name is required');
+      isValid = false;
+    } else clearError(name);
 
-      if (!email.value.trim() || !isValidEmail(email.value)) {
-        showError(email, 'Valid email is required');
-        isValid = false;
-      } else {
-        clearError(email);
-      }
+    if (!email.value.trim() || !isValidEmail(email.value)) {
+      showError(email, 'Valid email is required');
+      isValid = false;
+    } else clearError(email);
 
-      if (!phone.value.trim() || !isValidPhone(phone.value)) {
-        showError(phone, 'Valid phone number is required');
-        isValid = false;
-      } else {
-        clearError(phone);
-      }
+    if (!phone.value.trim() || !isValidPhone(phone.value)) {
+      showError(phone, 'Valid phone number is required');
+      isValid = false;
+    } else clearError(phone);
 
-      if (!message.value.trim()) {
-        showError(message, 'Message is required');
-        isValid = false;
-      } else {
-        clearError(message);
-      }
+    if (!message.value.trim()) {
+      showError(message, 'Message is required');
+      isValid = false;
+    } else clearError(message);
 
-      if (isValid) {
-        // Show success message
-        showSuccessMessage();
-        form.reset();
+    if (isValid) {
+      showSuccessMessage('Thank you! Your message has been prepared.');
+      form.reset();
+    }
+  });
+}
+
+function initWhatsAppInquiryForm() {
+  const form = document.getElementById('whatsappForm');
+  const successAlert = document.getElementById('successAlert');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('name');
+    const subject = document.getElementById('subject');
+    const message = document.getElementById('message');
+    if (!name || !subject || !message) return;
+
+    let isValid = true;
+    [name, subject, message].forEach((field) => {
+      const valid = field.value.trim().length > 0;
+      field.closest('.form-group')?.classList.toggle('error', !valid);
+      if (!valid) isValid = false;
+    });
+
+    if (!isValid) return;
+
+    const payload = {
+      name: name.value.trim(),
+      subject: subject.value.trim(),
+      message: message.value.trim(),
+      _subject: `Website Inquiry: ${subject.value.trim()}`
+    };
+
+    let submitted = false;
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/arunkumaratul@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      submitted = response.ok;
+    } catch (error) {
+      submitted = false;
+    }
+
+    const whatsappMessage = `*New Inquiry from Website*\n\n*Name:* ${payload.name}\n*Subject:* ${payload.subject}\n\n*Message:*\n${payload.message}`;
+    const whatsappUrl = `https://wa.me/9162216654?text=${encodeURIComponent(whatsappMessage)}`;
+
+    if (successAlert) {
+      successAlert.classList.add('show');
+      successAlert.querySelector('span').textContent = submitted
+        ? 'Message sent successfully. Opening WhatsApp for instant confirmation...'
+        : 'Opening WhatsApp for quick delivery...';
+    }
+
+    setTimeout(() => {
+      window.open(whatsappUrl, '_blank');
+      form.reset();
+      if (successAlert) successAlert.classList.remove('show');
+    }, 900);
+  });
+
+  form.querySelectorAll('input, textarea, select').forEach((input) => {
+    input.addEventListener('input', () => {
+      input.closest('.form-group')?.classList.remove('error');
+    });
+  });
+}
+
+function initHomepageInteractions() {
+  const langBtn = document.getElementById('langToggle');
+  if (langBtn) {
+    langBtn.removeAttribute('onclick');
+    langBtn.addEventListener('click', () => {
+      if (typeof window.toggleLanguage === 'function') {
+        window.toggleLanguage();
       }
     });
   }
+
+  document.querySelectorAll('[data-view]').forEach((card) => {
+    card.removeAttribute('onclick');
+    card.addEventListener('click', () => {
+      const view = card.getAttribute('data-view');
+      if (view) localStorage.setItem('serviceView', view);
+    });
+  });
 }
 
 function showError(input, message) {
   const formGroup = input.closest('.form-group');
-  formGroup.classList.add('error');
+  if (!formGroup) return;
 
+  formGroup.classList.add('error');
   let errorEl = formGroup.querySelector('.error-message');
   if (!errorEl) {
     errorEl = document.createElement('span');
@@ -469,18 +500,18 @@ function showError(input, message) {
     errorEl.style.cssText = 'color: var(--rose-500); font-size: 0.875rem; margin-top: 4px; display: block;';
     formGroup.appendChild(errorEl);
   }
+
   errorEl.textContent = message;
   input.style.borderColor = 'var(--rose-400)';
 }
 
 function clearError(input) {
   const formGroup = input.closest('.form-group');
-  formGroup.classList.remove('error');
+  if (!formGroup) return;
 
+  formGroup.classList.remove('error');
   const errorEl = formGroup.querySelector('.error-message');
-  if (errorEl) {
-    errorEl.remove();
-  }
+  if (errorEl) errorEl.remove();
   input.style.borderColor = '';
 }
 
@@ -492,7 +523,7 @@ function isValidPhone(phone) {
   return /^[0-9]{10}$/.test(phone.replace(/\D/g, ''));
 }
 
-function showSuccessMessage() {
+function showSuccessMessage(message) {
   const successDiv = document.createElement('div');
   successDiv.className = 'success-message';
   successDiv.style.cssText = `
@@ -506,29 +537,25 @@ function showSuccessMessage() {
   `;
   successDiv.innerHTML = `
     <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 8px;"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-    Thank you! We'll contact you shortly.
+    ${message}
   `;
 
-  const form = document.getElementById('contactForm');
-  form.parentNode.insertBefore(successDiv, form);
+  const form = document.querySelector('#contactForm form, #contactForm');
+  if (!form || !form.parentNode) return;
 
-  setTimeout(() => {
-    successDiv.remove();
-  }, 5000);
+  form.parentNode.insertBefore(successDiv, form);
+  setTimeout(() => successDiv.remove(), 5000);
 }
 
-// ===== Smooth Parallax Effect =====
 function initParallax() {
   const parallaxElements = document.querySelectorAll('[data-parallax]');
+  if (parallaxElements.length === 0) return;
 
   window.addEventListener('scroll', () => {
     const scrolled = window.pageYOffset;
-
-    parallaxElements.forEach(el => {
-      const speed = el.dataset.parallax || 0.5;
+    parallaxElements.forEach((el) => {
+      const speed = Number(el.dataset.parallax || 0.5);
       el.style.transform = `translateY(${scrolled * speed}px)`;
     });
   });
 }
-
-// Contact form is initialized via the main DOMContentLoaded handler above
