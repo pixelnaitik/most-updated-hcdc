@@ -307,7 +307,7 @@
                             viewBox="0 0 24 24">
                             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span>Redirecting to WhatsApp...</span>
+                        <span>Sending your message...</span>
                     </div>
 
                     <h3 style="font-size: 1.5rem; font-weight: 600; color: var(--slate-800); margin-bottom: 8px;"
@@ -331,9 +331,7 @@
                                     Inquiry</option>
                                 <option value="Report Related Query" data-translate="form_subject_reports">Report
                                     Related Query</option>
-                                <option value="Pricing Information" data-translate="form_subject_pricing">Pricing
-                                    Information</option>
-                                <option value="Home Collection Request" data-translate="form_subject_home_collection">
+                                                                <option value="Home Collection Request" data-translate="form_subject_home_collection">
                                     Home Collection Request</option>
                                 <option value="Feedback" data-translate="form_subject_feedback">Feedback</option>
                                 <option value="Other" data-translate="form_subject_other">Other</option>
@@ -553,81 +551,6 @@
         </div>
     </div>
 
-    <script>
-        // WhatsApp Form Handler
-        document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById('whatsappForm');
-            const successAlert = document.getElementById('successAlert');
-
-            if (form) {
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    let isValid = true;
-
-                    // Validate name
-                    const name = document.getElementById('name');
-                    if (!name.value.trim()) {
-                        name.closest('.form-group').classList.add('error');
-                        isValid = false;
-                    } else {
-                        name.closest('.form-group').classList.remove('error');
-                    }
-
-                    // Validate subject
-                    const subject = document.getElementById('subject');
-                    if (!subject.value) {
-                        subject.closest('.form-group').classList.add('error');
-                        isValid = false;
-                    } else {
-                        subject.closest('.form-group').classList.remove('error');
-                    }
-
-                    // Validate message
-                    const message = document.getElementById('message');
-                    if (!message.value.trim()) {
-                        message.closest('.form-group').classList.add('error');
-                        isValid = false;
-                    } else {
-                        message.closest('.form-group').classList.remove('error');
-                    }
-
-                    if (isValid) {
-                        // Construct WhatsApp message
-                        const phoneNumber = '9162216654'; // Updated contact number
-                        const whatsappMessage = `*New Inquiry from Website*
-
-*Name:* ${name.value.trim()}
-*Subject:* ${subject.value}
-
-*Message:*
-${message.value.trim()}`;
-
-                        // Encode the message for URL
-                        const encodedMessage = encodeURIComponent(whatsappMessage);
-                        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-                        // Show success message
-                        successAlert.classList.add('show');
-
-                        // Open WhatsApp in new tab
-                        setTimeout(() => {
-                            window.open(whatsappUrl, '_blank');
-                            form.reset();
-                            successAlert.classList.remove('show');
-                        }, 1000);
-                    }
-                });
-
-                // Remove error on input
-                form.querySelectorAll('input, textarea, select').forEach(input => {
-                    input.addEventListener('input', function () {
-                        this.closest('.form-group').classList.remove('error');
-                    });
-                });
-            }
-        });
-    </script>
 
     <!-- Service Worker Registration -->
     <script>

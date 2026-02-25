@@ -525,6 +525,25 @@ const translations = {
         form_subject_home_collection: "Home Collection Request",
         form_subject_feedback: "Feedback",
         form_subject_other: "Other",
+
+        // Booking slots
+        booking_preferred_slot: "Preferred Slot",
+        booking_slot_morning: "Morning (7 AM - 11 AM)",
+        booking_slot_afternoon: "Afternoon (11 AM - 3 PM)",
+        booking_slot_evening: "Evening (3 PM - 7 PM)",
+
+        // Patient education
+        education_title: "Patient",
+        education_title_highlight: "Education",
+        education_subtitle: "Understand when tests are needed, how to prepare, and when you can expect reports.",
+        education_cbc_title: "When to get CBC",
+        education_cbc_desc: "CBC is useful if you have fatigue, fever, weakness, frequent infections, or need a routine annual health check.",
+        education_lft_kft_title: "When to get LFT/KFT",
+        education_lft_kft_desc: "LFT/KFT help evaluate liver and kidney health in diabetes, hypertension, long-term medication use, or swelling/jaundice symptoms.",
+        education_prep_title: "Prep Instructions",
+        education_prep_desc: "Some tests require fasting for 8-12 hours. Drink water unless advised otherwise and follow medicine instructions given by your doctor.",
+        education_report_title: "Expected Report Timing",
+        education_report_desc: "Most routine reports are available within 6-24 hours; specialized tests may take longer depending on partner lab processing.",
         form_message: "Message",
         form_message_placeholder: "Type your message here...",
         form_message_error: "Please enter your message",
@@ -1068,6 +1087,25 @@ const translations = {
         form_subject_home_collection: "होम कलेक्शन अनुरोध",
         form_subject_feedback: "प्रतिक्रिया",
         form_subject_other: "अन्य",
+
+        // Booking slots
+        booking_preferred_slot: "पसंदीदा समय",
+        booking_slot_morning: "सुबह (7 बजे - 11 बजे)",
+        booking_slot_afternoon: "दोपहर (11 बजे - 3 बजे)",
+        booking_slot_evening: "शाम (3 बजे - 7 बजे)",
+
+        // Patient education
+        education_title: "रोगी",
+        education_title_highlight: "जानकारी",
+        education_subtitle: "जानें कि कौन से टेस्ट कब कराने चाहिए, कैसे तैयारी करें और रिपोर्ट कब तक मिलती है।",
+        education_cbc_title: "CBC कब कराना चाहिए",
+        education_cbc_desc: "थकान, बुखार, कमजोरी, बार-बार संक्रमण या वार्षिक हेल्थ चेकअप के समय CBC उपयोगी होता है।",
+        education_lft_kft_title: "LFT/KFT कब कराएं",
+        education_lft_kft_desc: "डायबिटीज, हाई बीपी, लंबे समय तक दवा लेने या सूजन/पीलिया जैसे लक्षणों में LFT/KFT लाभदायक है।",
+        education_prep_title: "टेस्ट से पहले तैयारी",
+        education_prep_desc: "कुछ टेस्ट के लिए 8-12 घंटे उपवास जरूरी होता है। सामान्यतः पानी पी सकते हैं, डॉक्टर की सलाह का पालन करें।",
+        education_report_title: "रिपोर्ट मिलने का समय",
+        education_report_desc: "अधिकांश रूटीन रिपोर्ट 6-24 घंटे में मिल जाती हैं; विशेष टेस्ट में पार्टनर लैब के अनुसार अधिक समय लग सकता है।",
         form_message: "संदेश",
         form_message_placeholder: "अपना संदेश यहां लिखें...",
         form_message_error: "कृपया अपना संदेश दर्ज करें",

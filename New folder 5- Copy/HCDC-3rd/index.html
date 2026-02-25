@@ -212,7 +212,7 @@
         <li><a href="about/" class="nav-link" data-translate="nav_about">About</a></li>
         <li><a href="contact/" class="nav-link" data-translate="nav_contact">Contact</a></li>
         <li><a href="#" class="nav-link nav-cta" id="bookTestBtn" data-translate="nav_book_test">Book Test</a></li>
-        <li><button id="langToggle" onclick="toggleLanguage()" class="lang-toggle-btn"
+        <li><button id="langToggle" class="lang-toggle-btn"
             aria-label="Toggle language between English and Hindi">हिंदी</button>
         </li>
       </ul>
@@ -876,7 +876,7 @@
           health needs</p>
         <div class="services-grid" style="grid-template-columns: repeat(4, 1fr);">
           <a href="services/index.html#catalog-section" class="service-card fade-in" data-view="single"
-            onclick="localStorage.setItem('serviceView', 'single');">
+            >
             <div class="service-icon">
               <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path
@@ -889,7 +889,7 @@
               thyroid panel tests.</p>
           </a>
           <a href="services/index.html#catalog-section" class="service-card fade-in" data-view="single"
-            onclick="localStorage.setItem('serviceView', 'single');">
+            >
             <div class="service-icon">
               <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path
@@ -902,7 +902,7 @@
               disease screening.</p>
           </a>
           <a href="services/index.html#catalog-section" class="service-card fade-in" data-view="packages"
-            onclick="localStorage.setItem('serviceView', 'packages');">
+            >
             <div class="service-icon">
               <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path
@@ -1022,8 +1022,8 @@
         <div class="about-grid">
           <div class="about-image fade-in">
             <picture>
-              <source srcset="assets/images/about-blood-collection.webp" type="image/webp">
-              <img src="assets/images/about-blood-collection.webp"
+              <source srcset="assets/images/lab-sample-analysis.webp" type="image/webp">
+              <img src="assets/images/lab-sample-analysis.webp"
                 alt="Professional phlebotomist collecting blood sample from patient at Health Care Diagnostic Center Konch, Gaya"
                 width="600" height="400" loading="lazy">
             </picture>
@@ -1088,6 +1088,31 @@
 
   </main>
 
+  <section class="section" id="patient-education" style="background: var(--slate-50);">
+    <div class="container">
+      <h2 class="section-title fade-in"><span data-translate="education_title">Patient</span> <span class="gradient-text" data-translate="education_title_highlight">Education</span></h2>
+      <p class="section-subtitle fade-in" data-translate="education_subtitle">Understand when tests are needed, how to prepare, and when you can expect reports.</p>
+      <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+        <article class="service-card fade-in">
+          <h3 class="service-title" data-translate="education_cbc_title">When to get CBC</h3>
+          <p class="service-desc" data-translate="education_cbc_desc">CBC is useful if you have fatigue, fever, weakness, frequent infections, or need a routine annual health check.</p>
+        </article>
+        <article class="service-card fade-in">
+          <h3 class="service-title" data-translate="education_lft_kft_title">When to get LFT/KFT</h3>
+          <p class="service-desc" data-translate="education_lft_kft_desc">LFT/KFT help evaluate liver and kidney health in diabetes, hypertension, long-term medication use, or swelling/jaundice symptoms.</p>
+        </article>
+        <article class="service-card fade-in">
+          <h3 class="service-title" data-translate="education_prep_title">Prep Instructions</h3>
+          <p class="service-desc" data-translate="education_prep_desc">Some tests require fasting for 8-12 hours. Drink water unless advised otherwise and follow medicine instructions given by your doctor.</p>
+        </article>
+        <article class="service-card fade-in">
+          <h3 class="service-title" data-translate="education_report_title">Expected Report Timing</h3>
+          <p class="service-desc" data-translate="education_report_desc">Most routine reports are available within 6-24 hours; specialized tests may take longer depending on partner lab processing.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
@@ -1098,7 +1123,7 @@
               alt="Health Care Diagnostic Center - Best Pathology Lab in Konch, Gaya" class="nav-logo-img" width="50"
               height="50">
             <div class="nav-logo-text" style="color: white;">
-              <span data-translate="brand_name"></span>Health Care</span>
+              <span data-translate="brand_name">Health Care</span>
               <span style="color: var(--slate-400);" data-translate="brand_tagline">Diagnostic Center</span>
             </div>
           </a>
@@ -1214,6 +1239,14 @@
           <div class="form-group">
             <label for="patientPhone">Phone Number</label>
             <input type="tel" id="patientPhone" name="patientPhone" placeholder="Enter your phone number" required>
+          </div>
+          <div class="form-group">
+            <label for="preferredSlot" data-translate="booking_preferred_slot">Preferred Slot</label>
+            <select id="preferredSlot" name="preferredSlot">
+              <option value="Morning (7 AM - 11 AM)" data-translate="booking_slot_morning">Morning (7 AM - 11 AM)</option>
+              <option value="Afternoon (11 AM - 3 PM)" data-translate="booking_slot_afternoon">Afternoon (11 AM - 3 PM)</option>
+              <option value="Evening (3 PM - 7 PM)" data-translate="booking_slot_evening">Evening (3 PM - 7 PM)</option>
+            </select>
             <div style="margin-top: 16px;">
               <label for="patientQueries"
                 style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem;">Any
