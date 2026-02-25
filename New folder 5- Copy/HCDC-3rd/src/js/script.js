@@ -165,8 +165,7 @@ function initBookTestModal() {
   const confirmWhatsApp = document.getElementById('confirmWhatsApp');
   const confirmCall = document.getElementById('confirmCall');
 
-  // Keep modal opening resilient even if some footer controls are removed from a page.
-  if (!modal) return;
+  if (!modal || !prevBtn || !nextBtn || !confirmWhatsApp || !confirmCall) return;
 
   let currentStep = 1;
   const totalSteps = 2;
@@ -201,30 +200,26 @@ function initBookTestModal() {
     updateSteps();
   }
 
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      if (currentStep > 1) {
-        currentStep -= 1;
-        updateSteps();
-      }
-    });
-  }
+  prevBtn.addEventListener('click', () => {
+    if (currentStep > 1) {
+      currentStep -= 1;
+      updateSteps();
+    }
+  });
 
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      if (currentStep === 1) {
-        currentStep = 2;
-        updateSteps();
-        updateBookingSummary();
-        return;
-      }
+  nextBtn.addEventListener('click', () => {
+    if (currentStep === 1) {
+      currentStep = 2;
+      updateSteps();
+      updateBookingSummary();
+      return;
+    }
 
-      if (validateBookingDetails()) {
-        currentStep = totalSteps;
-        updateSteps();
-      }
-    });
-  }
+    if (validateBookingDetails()) {
+      currentStep = totalSteps;
+      updateSteps();
+    }
+  });
 
   function updateSteps() {
     document.querySelectorAll('.step-dot').forEach((dot, index) => {
@@ -235,25 +230,23 @@ function initBookTestModal() {
       content.classList.toggle('active', index + 1 === Math.min(currentStep, 2));
     });
 
-    if (prevBtn) prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
-    if (nextBtn) nextBtn.style.display = currentStep < totalSteps ? 'block' : 'none';
-    if (confirmWhatsApp) confirmWhatsApp.style.display = currentStep === totalSteps ? 'flex' : 'none';
-    if (confirmCall) confirmCall.style.display = currentStep === totalSteps ? 'flex' : 'none';
+    prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
+    nextBtn.style.display = currentStep < totalSteps ? 'block' : 'none';
+    confirmWhatsApp.style.display = currentStep === totalSteps ? 'flex' : 'none';
+    confirmCall.style.display = currentStep === totalSteps ? 'flex' : 'none';
   }
 
-  if (confirmWhatsApp) {
-    confirmWhatsApp.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (!validateBookingDetails()) {
-        currentStep = 2;
-        updateSteps();
-        return;
-      }
+  confirmWhatsApp.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!validateBookingDetails()) {
+      currentStep = 2;
+      updateSteps();
+      return;
+    }
 
-      const message = generateWhatsAppMessage();
-      window.open(`https://wa.me/9162216654?text=${encodeURIComponent(message)}`, '_blank');
-    });
-  }
+    const message = generateWhatsAppMessage();
+    window.open(`https://wa.me/9162216654?text=${encodeURIComponent(message)}`, '_blank');
+  });
 
   updateSteps();
 }
