@@ -45,15 +45,32 @@ Visit the live website: [healthcarediagnosticscenter.in](https://healthcarediagn
 ## 🚀 View Locally
 
 1. Clone or download this repository
-2. Open `index.html` in your web browser
+2. Install dependencies (`npm ci`)
+3. Build optimized assets (`npm run build`)
+4. Open `index.html` in your web browser
 
-No build tools or server required - it's a static website!
+This project is strictly static (no custom backend). Contact submissions use static-friendly channels (WhatsApp + form relay).
 
 ```bash
 # Using Python's built-in server (optional)
 python -m http.server 8000
 
 # Then visit http://localhost:8000
+```
+
+
+## 🧪 Quality Checks
+
+```bash
+# Lint, link check, and smoke checks
+npm run qa
+```
+
+```bash
+# Individual checks
+npm run lint
+npm run check:links
+npm run qa:lighthouse
 ```
 
 ## 🤝 Contributing

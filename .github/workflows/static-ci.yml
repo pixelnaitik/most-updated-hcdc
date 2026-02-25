@@ -1,0 +1,39 @@
+name: Static Website CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: New folder 5- Copy/HCDC-3rd
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: New folder 5- Copy/HCDC-3rd/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Lint scripts
+        run: npm run lint
+
+      - name: Check internal links
+        run: npm run check:links
+
+      - name: Lighthouse smoke
+        run: npm run qa:lighthouse
